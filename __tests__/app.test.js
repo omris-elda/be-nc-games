@@ -53,7 +53,7 @@ describe("GET reviews by ID", () => {
       created_at: expect.any(String),
       votes: expect.any(Number),
     };
-    test("Test that /api/reviews/ returns 200 and a correct object when given a valid review ID", () => {
+    test("Test that /api/reviews/ returns 200 and the correct review in the appropriate format when given a valid review ID", () => {
         return request(app)
             .get("/api/reviews/1")
             .expect(200)
@@ -64,6 +64,7 @@ describe("GET reviews by ID", () => {
                 expect(review[0].review_id).toEqual(1);
             });
     });
+
     test("Test that api/reviews/ returns 400 and a message when given an out of range ID", () => {
         return request(app)
             .get("/api/reviews/9001")
