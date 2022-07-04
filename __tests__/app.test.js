@@ -54,6 +54,18 @@ describe("GET reviews by ID", () => {
       votes: expect.any(Number),
     };
     test("Test that /api/reviews/ returns 200 and the correct review in the appropriate format when given a valid review ID", () => {
+        const review_1 = {
+          review_id: 1,
+          title: "Agricola",
+          designer: "Uwe Rosenberg",
+          owner: "mallionaire",
+          review_img_url:
+            "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+          review_body: "Farmyard fun!",
+          category: "euro game",
+          created_at: "2021-01-18T10:00:20.514Z",
+          votes: 1,
+        };
         return request(app)
             .get("/api/reviews/1")
             .expect(200)
@@ -62,6 +74,7 @@ describe("GET reviews by ID", () => {
                 expect(review).toEqual(expect.arrayContaining([expect.objectContaining(testReview)]));
                 expect(review).toHaveLength(1);
                 expect(review[0].review_id).toEqual(1);
+                expect(review[0]).toEqual(review_1);
             });
     });
 
