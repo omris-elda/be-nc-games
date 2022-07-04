@@ -25,11 +25,6 @@ describe("GET Categories", () => {
         slug: expect.any(String),
         description: expect.any(String)
     }
-    test("Test that /api/categories returns 200", () => {
-        return request(app)
-            .get("/api/categories")
-            .expect(200)
-    });
     
     test("Test that /api/categories returns the correct type of object", () => {
         return request(app)
@@ -38,9 +33,9 @@ describe("GET Categories", () => {
             .then(({ body }) => {
                 const { categories } = body;
                 expect(categories).toHaveLength(4);
-                expect(categories).toEqual(
-                    expect.arrayContaining([expect.objectContaining(testCategory)])
-                );
+                categories.forEach(category => {
+                    expect(category).toEqual(expect.objectContaining(testCategory));
+                });
             });
     });
 });
