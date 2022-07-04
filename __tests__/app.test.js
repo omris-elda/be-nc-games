@@ -57,9 +57,28 @@ describe("GET reviews by ID", () => {
         return request(app)
             .get("/api/reviews/1")
             .expect(200)
-            // .then(({ body }) => {
-            //     const { review } = body;
-            //     expect(review).toEqual(expect.objectContaining(testReview));
-            // });
+            .then(({ body }) => {
+                const { review } = body;
+                expect(review).toEqual(expect.arrayContaining([expect.objectContaining(testReview)]));
+                expect(review).toHaveLength(1);
+                expect(review[0].review_id).toEqual(1);
+            });
+    });
+    test("Test that api/reviews/ returns 400 and a message when given an out of range ID", () => {
+        return request(app)
+            .get("/api/reviews/9001")
+            .expect(400)
+            .then(({ body }) => {
+                expect(body.msg).toBe("Review ID provided is out of range.");
+            });
+    });
+
+    test("Test that api/reviews/ returns 400 and a message when given an invalid ID", () => {
+      return request(app)
+        .get("/api/reviews/tomato")
+        .expect(400)
+        .then(({ body }) => {
+          expect(body.msg).toBe("Incorrect format used for query.");
+        });
     });
 });
