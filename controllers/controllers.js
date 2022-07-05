@@ -1,4 +1,4 @@
-const { selectCategories, fetchReviewByID } = require("../models/models.js");
+const { selectCategories, fetchReviewByID, addReviewVotes } = require("../models/models.js");
 
 exports.getCategories = (request, response, next) => {
     selectCategories().then(categories => {
@@ -18,4 +18,22 @@ exports.getReviewByID = (request, response, next) => {
         .catch((err) => {
             next(err);
         });
+};
+
+exports.patchReviewVotes = (request, response, next) => {
+    const review_id = request.params.review_id;
+    const newVote = request.body.inc_votes;
+    console.log(newVote);
+    if (newVote === undefined) {
+        response.status(400).send({ msg: "No information given to update the selected review." });
+    } else if (isNaN(newVote)) {
+        response.status(400).send({ msg: "Added votes must be a number." });
+    } else {
+        addReviewVotes(review_id, newVote).then(review => {
+            response.status(200).send({ review });
+        }).catch((err) => {
+            next(err);
+        });
+    };
+
 };

@@ -96,3 +96,93 @@ describe("GET reviews by ID", () => {
         });
     });
 });
+
+describe("PATCH /api/reviews", () => {
+    describe("happy path", () => {
+
+        const returnObject = {
+          review_id: 1,
+          title: "Agricola",
+          designer: "Uwe Rosenberg",
+          owner: "mallionaire",
+          review_img_url:
+            "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png",
+          review_body: "Farmyard fun!",
+          category: "euro game",
+          created_at: "2021-01-18T10:00:20.514Z",
+          votes: 101,
+        };
+
+        test("Sending a request returns a valid response object and status 200", () => {
+            return request(app)
+                .patch("/api/reviews/1")
+                .send({ inc_votes: 100 })
+                .expect(200)
+                .then(({ body }) => {
+                    expect(body.review[0]).toEqual(returnObject);
+                });
+        });
+
+        test("Sending a request with extra properties does not break the request and they just get ignored", () => {
+            return request(app)
+                .patch("/api/reviews/1")
+                .send({ inc_votes: 100, nonsense: "In this house?" })
+                .expect(200)
+                .then(({ body }) => {
+                    expect(body.review[0]).toEqual(returnObject);
+                });
+        });
+
+        test("Sending a negative number will subtract votes", () => {
+            return request(app)
+                .patch("/api/reviews/1")
+                .send({ inc_votes: -1 })
+                .expect(200)
+                .then(({ body }) => {
+                    expect(body.review[0].votes).toEqual(0);
+                })
+        })
+    });
+
+    describe("Sad path :(", () => {
+        test("Sending a patch request to an invalid review ID will get the appropriate error back", () => {
+            return request(app)
+                .patch("/api/reviews/9001")
+                .send({ inc_votes: 10 })
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toBe("Review ID provided is out of range.");
+                });
+        });
+
+        test("Sending a patch request with no information will get the appropriate error back", () => {
+            return request(app)
+                .patch("/api/reviews/1")
+                .send({})
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toBe("No information given to update the selected review.");
+                });
+        });
+
+        test("Sending a patch request with invalid info will result in the appropriate error being sent back", () => {
+            return request(app)
+                .patch("/api/reviews/1")
+                .send({ inc_votes: "Numbers? In this economy?!" })
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toBe("Added votes must be a number.");
+                });
+        });
+
+        test("Sending a patch request with an invalid review ID format will result in an error being sent back", () => {
+            return request(app)
+              .patch("/api/reviews/invalid_format")
+              .send({ inc_votes: 10 })
+              .expect(400)
+              .then(({ body }) => {
+                expect(body.msg).toBe("Incorrect format used for query.");
+              });
+        })
+    });
+});
