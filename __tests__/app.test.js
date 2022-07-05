@@ -71,10 +71,8 @@ describe("GET reviews by ID", () => {
             .expect(200)
             .then(({ body }) => {
                 const { review } = body;
-                expect(review).toEqual(expect.arrayContaining([expect.objectContaining(testReview)]));
-                expect(review).toHaveLength(1);
-                expect(review[0].review_id).toEqual(1);
-                expect(review[0]).toEqual(review_1);
+                expect(review).toEqual(expect.objectContaining(testReview));
+                expect(review).toEqual(review_1);
             });
     });
 
@@ -119,7 +117,7 @@ describe("PATCH /api/reviews", () => {
                 .send({ inc_votes: 100 })
                 .expect(200)
                 .then(({ body }) => {
-                    expect(body.review[0]).toEqual(returnObject);
+                    expect(body.review).toEqual(returnObject);
                 });
         });
 
@@ -129,7 +127,7 @@ describe("PATCH /api/reviews", () => {
                 .send({ inc_votes: 100, nonsense: "In this house?" })
                 .expect(200)
                 .then(({ body }) => {
-                    expect(body.review[0]).toEqual(returnObject);
+                    expect(body.review).toEqual(returnObject);
                 });
         });
 
@@ -139,7 +137,7 @@ describe("PATCH /api/reviews", () => {
                 .send({ inc_votes: -1 })
                 .expect(200)
                 .then(({ body }) => {
-                    expect(body.review[0].votes).toEqual(0);
+                    expect(body.review.votes).toEqual(0);
                 })
         })
     });
@@ -177,12 +175,13 @@ describe("PATCH /api/reviews", () => {
 
         test("Sending a patch request with an invalid review ID format will result in an error being sent back", () => {
             return request(app)
-              .patch("/api/reviews/invalid_format")
-              .send({ inc_votes: 10 })
-              .expect(400)
-              .then(({ body }) => {
-                expect(body.msg).toBe("Incorrect format used for query.");
-              });
-        })
+                .patch("/api/reviews/invalid_format")
+                .send({ inc_votes: 10 })
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toBe("Incorrect format used for query.");
+                });
+        });
     });
 });
+

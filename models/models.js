@@ -19,7 +19,7 @@ exports.fetchReviewByID = (review_id) => {
                     msg: "Review ID provided is out of range.",
                 });
             };
-            return rows;
+            return rows[0];
         });
 };
 
@@ -47,7 +47,8 @@ exports.addReviewVotes = (review_id, newVote) => {
                 [review_id, numberOfVotes]
             )
                 .then(({ rows }) => {
-                    return rows;
+                    // console.log(rows);
+                    return rows[0];
                 });
         }
       })
