@@ -76,6 +76,16 @@ describe("GET reviews by ID", () => {
             });
     });
 
+    test("Test that comment_count works when there are multiple comments", () => {
+        return request(app)
+          .get("/api/reviews/2")
+          .expect(200)
+          .then(({ body }) => {
+            const { review } = body;
+              expect(review.comment_count).toEqual("3");
+          });
+    })
+
     test("Test that api/reviews/ returns 400 and a message when given an out of range ID", () => {
         return request(app)
             .get("/api/reviews/9001")
