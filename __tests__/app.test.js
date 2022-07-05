@@ -63,7 +63,8 @@ describe("GET reviews by ID", () => {
           review_body: "Farmyard fun!",
           category: "euro game",
           created_at: "2021-01-18T10:00:20.514Z",
-          votes: 1,
+            votes: 1,
+            comment_count: 0,
         };
         return request(app)
             .get("/api/reviews/1")
@@ -74,6 +75,16 @@ describe("GET reviews by ID", () => {
                 expect(review).toEqual(review_1);
             });
     });
+
+    test("Test that comment_count works when there are multiple comments", () => {
+        return request(app)
+          .get("/api/reviews/2")
+          .expect(200)
+          .then(({ body }) => {
+            const { review } = body;
+              expect(review.comment_count).toEqual(3);
+          });
+    })
 
     test("Test that api/reviews/ returns 400 and a message when given an out of range ID", () => {
         return request(app)
