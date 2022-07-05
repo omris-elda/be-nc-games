@@ -30,7 +30,7 @@ exports.patchReviewVotes = (request, response, next) => {
         response.status(400).send({ msg: "Added votes must be a number." });
     } else {
         addReviewVotes(review_id, newVote).then(review => {
-            console.log({ review: review });
+            // console.log({ review: review });
             response.status(200).send({ review: review });
         }).catch((err) => {
             next(err);
