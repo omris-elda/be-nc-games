@@ -1,4 +1,9 @@
-const { selectCategories, fetchReviewByID, addReviewVotes } = require("../models/models.js");
+const {
+  selectCategories,
+  fetchReviewByID,
+  addReviewVotes,
+  selectUsers,
+} = require("../models/models.js");
 
 exports.getCategories = (request, response, next) => {
     selectCategories().then(categories => {
@@ -36,5 +41,14 @@ exports.patchReviewVotes = (request, response, next) => {
             next(err);
         });
     };
-
 };
+
+exports.getUsers = (request, response, next) => {
+        selectUsers()
+          .then((users) => {
+            response.status(200).send({ users });
+          })
+          .catch((err) => {
+            next(err);
+          });
+}
