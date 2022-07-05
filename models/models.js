@@ -29,6 +29,7 @@ exports.fetchReviewByID = (review_id) => {
                 });
             };
             rows = rows[0];
+            rows.comment_count = parseInt(rows.comment_count);
             return rows;
         });
 };
