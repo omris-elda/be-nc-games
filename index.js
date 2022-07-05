@@ -4,6 +4,7 @@ const {
   getCategories,
   getReviewByID,
   patchReviewVotes,
+  getUsers,
 } = require("./controllers/controllers.js");
 
 const app = express();
@@ -14,6 +15,8 @@ app.get("/api/categories", getCategories);
 app.get("/api/reviews/:review_id", getReviewByID);
 
 app.patch("/api/reviews/:review_id", patchReviewVotes);
+
+app.get("/api/users", getUsers);
 
 
 

@@ -3,7 +3,6 @@ const { categoryData, commentData, reviewData, userData } = require("../db/data/
 const db = require("../db/connection.js");
 const request = require("supertest");
 const app = require("../index.js");
-const { forEach } = require("../db/data/test-data/categories.js");
 
 
 beforeEach(() => seed({ categoryData, commentData, reviewData, userData }));
@@ -185,3 +184,23 @@ describe("PATCH /api/reviews", () => {
     });
 });
 
+describe("GET users", () => {
+    const testUser = {
+        username: expect.any(String),
+        name: expect.any(String),
+        avatar_url: expect.any(String),
+    };
+
+  test("Test that /api/users returns the correct type of object", () => {
+    return request(app)
+      .get("/api/users")
+      .expect(200)
+      .then(({ body }) => {
+        const { users } = body;
+        expect(users).toHaveLength(4);
+        users.forEach((user) => {
+          expect(user).toEqual(expect.objectContaining(testUser));
+        });
+      });
+  });
+});
