@@ -3,6 +3,7 @@ const {
   fetchReviewByID,
   addReviewVotes,
   selectUsers,
+  fetchReviews,
 } = require("../models/models.js");
 
 exports.getCategories = (request, response, next) => {
@@ -42,11 +43,21 @@ exports.patchReviewVotes = (request, response, next) => {
 };
 
 exports.getUsers = (request, response, next) => {
-        selectUsers()
-          .then((users) => {
+    selectUsers()
+        .then((users) => {
             response.status(200).send({ users });
-          })
-          .catch((err) => {
+        })
+        .catch((err) => {
             next(err);
-          });
-}
+        });
+};
+
+exports.getReviews = (request, response, next) => {
+    fetchReviews()
+        .then((reviews) => {
+            response.status(200).send({ reviews });
+        })
+        .catch((err) => {
+            next(err);
+        });
+};

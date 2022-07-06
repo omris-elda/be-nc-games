@@ -215,3 +215,41 @@ describe("GET users", () => {
       });
   });
 });
+
+describe("GET all reviews", () => {
+        const testReview = {
+            review_id: expect.any(Number),
+            title: expect.any(String),
+            category: expect.any(String),
+            designer: expect.any(String),
+            owner: expect.any(String),
+            review_body: expect.any(String),
+            review_img_url: expect.any(String),
+            created_at: expect.any(String),
+            votes: expect.any(Number),
+            comment_count: expect.any(Number),
+        };
+
+    test("Test that the endpoint returns an appropriate array of objects and a 200 status code", () => {
+        return request(app)
+            .get("/api/reviews")
+            .expect(200)
+            .then(({ body }) => {
+                const { reviews } = body;
+                expect(reviews).toHaveLength(13);
+                reviews.forEach((review) => {
+                    expect(review).toEqual(expect.objectContaining(testReview));
+                });
+            });
+    });
+    
+    test("Ensure it's ordered by date in descending order", () => {
+        return request(app)
+            .get("/api/reviews")
+            .expect(200)
+            .then(({ body }) => {
+                const { reviews } = body;
+                expect(reviews[0].review_id).toEqual(7);
+            });
+    });
+});
