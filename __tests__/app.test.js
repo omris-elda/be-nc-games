@@ -253,3 +253,63 @@ describe("GET all reviews", () => {
             });
     });
 });
+
+describe("GET comments by review ID", () => {
+    describe("happy path :)", () => {
+        const testComment = {
+            comment_id: expect.any(Number),
+            votes: expect.any(Number),
+            created_at: expect.any(String),
+            author: expect.any(String),
+            body: expect.any(String),
+            review_id: expect.any(Number),
+        };
+
+        test("Ensure that the request comes back with 200 status and the appropriate body when the review ID is valid and there are comments to return", () => {
+            return request(app)
+                .get("/api/reviews/2/comments")
+                .expect(200)
+                .then(({ body }) => {
+                    const { comments } = body;
+                    expect(comments).toHaveLength(3);
+                    comments.forEach((comment) => {
+                        expect(comment).toEqual(
+                            expect.objectContaining(testComment)
+                        );
+                        expect(comment.review_id).toEqual(2);
+                    });
+                });
+        });
+
+        test("Ensure that the request comes back with an empty array if there are no comments", () => {
+            return request(app)
+                .get("/api/reviews/1/comments")
+                .expect(200)
+                .then(({ body }) => {
+                    const { comments } = body;
+                    expect(comments).toHaveLength(0);
+                    expect(comments).toEqual([]);
+                });
+        });
+    });
+
+    describe("sad path :(", () => {
+        test("If a review ID is out of scope send the correct error back", () => {
+            return request(app)
+                .get("/api/reviews/9001/comments")
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toEqual("Review ID provided is out of range.");
+                });
+        });
+
+        test("If a review ID is in an invalid format send the correct error back", () => {
+            return request(app)
+                .get("/api/reviews/hello/comments")
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toEqual("Incorrect format used for query.");
+                });
+        });
+    });
+});
