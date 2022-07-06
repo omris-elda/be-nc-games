@@ -79,15 +79,6 @@ exports.postComment = (request, response, next) => {
     const review_id = request.params.review_id;
     let newComment = request.body;
 
-    if (newComment.username === undefined) {
-        response
-          .status(400)
-          .send({ msg: "Please provide a username." });
-    } else if (newComment.body === undefined) {
-        response
-          .status(400)
-          .send({ msg: "Please provide a body." });
-    } else {    
         addComment(review_id, newComment)
             .then(( comment ) => {
                 response.status(201).send({ comment });
@@ -95,5 +86,4 @@ exports.postComment = (request, response, next) => {
             .catch((err) => {
                 next(err);
             });
-    };
 };

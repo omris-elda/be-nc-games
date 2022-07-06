@@ -328,18 +328,14 @@ describe("POST new comment", () => {
                 .expect(201)
                 .then(({ body }) => {
                     const newComment = body.comment;
-                    expect(newComment.author).toEqual(testComment.username);
-                });
-        });
-
-        test("Ensure that only the posted comment is returned", () => {
-            return request(app)
-                .post("/api/reviews/2/comments")
-                .send(testComment)
-                .expect(201)
-                .then(({ body }) => {
-                    const newComment = body.comment;
-                    expect(newComment.author).toEqual(testComment.username);
+                    expect(newComment).toEqual({
+                        author: "philippaclaire9",
+                        body: "Where is my head?",
+                        comment_id: 7,
+                        review_id: 1,
+                        created_at: expect.any(String),
+                        votes: 0
+                    });
                 });
         });
 
@@ -351,7 +347,14 @@ describe("POST new comment", () => {
                 .expect(201)
                 .then(({ body }) => {
                     const newComment = body.comment;
-                    expect(newComment.author).toEqual(testComment.username);
+                    expect(newComment).toEqual({
+                        author: "philippaclaire9",
+                        body: "Where is my head?",
+                        comment_id: 7,
+                        review_id: 1,
+                        created_at: expect.any(String),
+                        votes: 0,
+                    });
                 });
         });
     });
@@ -393,7 +396,7 @@ describe("POST new comment", () => {
                     username: "invalid username",
                     body: "Oh, here's my head!"
                 })
-                .expect(400)
+                .expect(404)
                 .then(({ body }) => {
                     expect(body.msg).toEqual("Username provided does not exist.");
                 });
@@ -403,7 +406,7 @@ describe("POST new comment", () => {
           return request(app)
             .post("/api/reviews/bananas/comments")
             .send({
-              username: "invalid username",
+              username: "philippaclaire9",
               body: "Oh look!",
             })
             .expect(400)
@@ -416,7 +419,7 @@ describe("POST new comment", () => {
           return request(app)
             .post("/api/reviews/9001/comments")
             .send({
-              username: "invalid username",
+              username: "philippaclaire9",
               body: "A disembodied voice!",
             })
             .expect(400)
