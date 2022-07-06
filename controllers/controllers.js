@@ -4,6 +4,7 @@ const {
   addReviewVotes,
   selectUsers,
   fetchReviews,
+  fetchComments,
 } = require("../models/models.js");
 
 exports.getCategories = (request, response, next) => {
@@ -58,6 +59,18 @@ exports.getReviews = (request, response, next) => {
             response.status(200).send({ reviews });
         })
         .catch((err) => {
+            next(err);
+        });
+};
+
+exports.getComments = (request, response, next) => {
+    const review_id = request.params.review_id;
+    fetchComments(review_id)
+        .then((comments) => {
+            response.status(200).send({ comments });
+        })
+        .catch((err) => {
+            console.log(err);
             next(err);
         });
 };
