@@ -276,6 +276,7 @@ describe("GET comments by review ID", () => {
                         expect(comment).toEqual(
                             expect.objectContaining(testComment)
                         );
+                        expect(comment.review_id).toEqual(2);
                     });
                 });
         });
