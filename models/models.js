@@ -112,3 +112,35 @@ exports.fetchComments = (review_id) => {
         
         });
 };
+
+exports.addComment = (review_id, newComment) => {
+    return db
+        .query(`SELECT * FROM reviews WHERE review_id = $1`, [review_id])
+        .then(({ rows }) => {
+            if (rows.length === 0) {
+                return Promise.reject({
+                    status: 400,
+                    msg: "Review ID provided is out of range.",
+                });
+            };
+        })
+        .then(() => {
+            return db.query(`SELECT * FROM users WHERE username = $1`, [newComment.username])
+        })
+        .then(({ rows }) => {
+            if (rows.length === 0) {
+                return Promise.reject({
+                    status: 400,
+                    msg: "Username provided does not exist.",
+                });
+            };
+        })
+        .then(() => {
+            return db
+                .query(`INSERT INTO comments (author, body, review_id) VALUES ($1, $2, $3) RETURNING *;`, [newComment.username, newComment.body, review_id])
+        })
+        .then(({ rows }) => {
+            return rows[0];
+        });
+};
+
