@@ -193,3 +193,6 @@ exports.addComment = (review_id, newComment) => {
     };
 };
 
+exports.removeComment = (comment_id) => {
+    
+}

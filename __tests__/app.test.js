@@ -461,7 +461,6 @@ describe("GET reviews with queries", () => {
             .expect(200)
             .then(({ body }) => {
               const { reviews } = body;
-              console.log(reviews);
               expect(reviews).toBeSorted({ descending: true });
               expect(reviews).toHaveLength(1);
             });
@@ -476,6 +475,7 @@ describe("GET reviews with queries", () => {
                     expect(reviews).toHaveLength(1)
                 });
         });
+
     });
 
     describe("sad path :(", () => {
