@@ -5,6 +5,7 @@ const {
   selectUsers,
   fetchReviews,
   fetchComments,
+  addComment,
 } = require("../models/models.js");
 
 exports.getCategories = (request, response, next) => {
@@ -70,7 +71,19 @@ exports.getComments = (request, response, next) => {
             response.status(200).send({ comments });
         })
         .catch((err) => {
-            console.log(err);
             next(err);
         });
+};
+
+exports.postComment = (request, response, next) => {
+    const review_id = request.params.review_id;
+    let newComment = request.body;
+
+        addComment(review_id, newComment)
+            .then(( comment ) => {
+                response.status(201).send({ comment });
+            })
+            .catch((err) => {
+                next(err);
+            });
 };

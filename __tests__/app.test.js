@@ -313,3 +313,119 @@ describe("GET comments by review ID", () => {
         });
     });
 });
+
+describe("POST new comment", () => {
+    describe("Happy path :)", () => {
+        let testComment = {
+            username: "philippaclaire9",
+            body: "Where is my head?"
+        };
+
+        test("When a valid comment is added it is returned as an object", () => {
+            return request(app)
+                .post("/api/reviews/1/comments")
+                .send(testComment)
+                .expect(201)
+                .then(({ body }) => {
+                    const newComment = body.comment;
+                    expect(newComment).toEqual({
+                        author: "philippaclaire9",
+                        body: "Where is my head?",
+                        comment_id: 7,
+                        review_id: 1,
+                        created_at: expect.any(String),
+                        votes: 0
+                    });
+                });
+        });
+
+        test("ensure that when extra information is given it is ignored", () => {
+            testComment.extra = "Extra unncessary info";
+            return request(app)
+                .post("/api/reviews/1/comments")
+                .send(testComment)
+                .expect(201)
+                .then(({ body }) => {
+                    const newComment = body.comment;
+                    expect(newComment).toEqual({
+                        author: "philippaclaire9",
+                        body: "Where is my head?",
+                        comment_id: 7,
+                        review_id: 1,
+                        created_at: expect.any(String),
+                        votes: 0,
+                    });
+                });
+        });
+    });
+
+    describe("sad path :(", () => {
+        test("when no information is sent send back the appropriate error", () => {
+            return request(app)
+                .post("/api/reviews/1/comments")
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toEqual("Please provide a username.");
+                });
+        });
+
+        test("when no username is sent send back the appropriate error", () => {
+            return request(app)
+                .post("/api/reviews/1/comments")
+                .send({ body: "test text" })
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toEqual("Please provide a username.");
+                });
+        });
+
+        test("when no body is sent send back the appropriate error", () => {
+            return request(app)
+                .post("/api/reviews/1/comments")
+                .send({ username: "username goes here" })
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toEqual("Please provide a body.");
+                });
+        });
+
+        test("when an invalid username is sent send back the appropriate error", () => {
+            return request(app)
+                .post("/api/reviews/1/comments")
+                .send({
+                    username: "invalid username",
+                    body: "Oh, here's my head!"
+                })
+                .expect(404)
+                .then(({ body }) => {
+                    expect(body.msg).toEqual("Username provided does not exist.");
+                });
+        });
+
+        test("when an invalid review_id is sent send back the appropriate error", () => {
+          return request(app)
+            .post("/api/reviews/bananas/comments")
+            .send({
+              username: "philippaclaire9",
+              body: "Oh look!",
+            })
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).toEqual("Incorrect format used for query.");
+            });
+        });
+
+        test("when an out of range review_id is sent send back the appropriate error", () => {
+          return request(app)
+            .post("/api/reviews/9001/comments")
+            .send({
+              username: "philippaclaire9",
+              body: "A disembodied voice!",
+            })
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).toEqual("Review ID provided is out of range.");
+            });
+        });
+    });
+});
