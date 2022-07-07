@@ -55,11 +55,21 @@ exports.getUsers = (request, response, next) => {
 };
 
 exports.getReviews = (request, response, next) => {
-    fetchReviews()
+
+    let sortBy = request.query.sort_by;
+    let orderBy = request.query.order;
+    let category = request.query.category;
+
+    if (orderBy !== undefined) {
+        orderBy = orderBy.toUpperCase();
+    }
+
+    fetchReviews(sortBy, orderBy, category)
         .then((reviews) => {
             response.status(200).send({ reviews });
         })
         .catch((err) => {
+            console.log(err);
             next(err);
         });
 };

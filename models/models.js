@@ -69,21 +69,57 @@ exports.selectUsers = () => {
     });
 };
 
-exports.fetchReviews = () => {
-    return db
-        .query(
-            `SELECT reviews.*, COUNT(comments.comment_id) AS comment_count 
+exports.fetchReviews = (sortBy = "date", orderBy = "DESC", category) => {
+
+    if (!["ASC", "DESC"].includes(orderBy)) {
+        return Promise.reject({ status: 400, msg: "Invalid order query." });
+    };
+
+    const validSortBy = ["review_id", "title", "category", "designer", "owner", "reivew_body", "review_img_url", "date", "votes"]
+
+    if (!validSortBy.includes(sortBy)) {
+        return Promise.reject({ status: 400, msg: "Invalid sort query." });
+    } else if (sortBy === "date") {
+        sortBy = "created_at";
+    };
+
+    let queryStr = `SELECT reviews.*, COUNT(comments.comment_id) AS comment_count 
                 FROM reviews
                 LEFT JOIN comments
-                ON reviews.review_id = comments.review_id
-                GROUP BY reviews.review_id
-                ORDER BY reviews.created_at DESC;`
-        )
+                ON reviews.review_id = comments.review_id`;
+
+    
+    let categories = [];
+    let queryValues = [];
+    
+    return db.query(`SELECT * FROM categories`)
         .then(({ rows }) => {
-            rows.forEach(row => {
-                row.comment_count = parseInt(row.comment_count);
-            })
-            return rows;
+            rows.forEach((row) => {
+                categories.push(row.slug);
+            });
+            if (category !== undefined && categories.includes(category)) {
+                queryStr += ` WHERE reviews.category = $1`;
+                queryValues.push(category);
+            } else if (category !== undefined && !categories.includes(category)) {
+                return Promise.reject({ status: 404, msg: "The provided category doesn't exist." });
+            };
+            
+            queryStr += ` GROUP BY reviews.review_id 
+                ORDER BY reviews.${sortBy} ${orderBy};`;
+        })
+        
+        .then(() => {
+        
+            return db
+                .query(
+                    queryStr, queryValues
+                )
+                .then(({ rows }) => {
+                    rows.forEach((row) => {
+                        row.comment_count = parseInt(row.comment_count);
+                    });
+                    return rows;
+                });
         });
 };
 

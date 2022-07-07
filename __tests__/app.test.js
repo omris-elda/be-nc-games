@@ -429,3 +429,81 @@ describe("POST new comment", () => {
         });
     });
 });
+
+describe("GET reviews with queries", () => {
+    describe("happy path :)", () => {
+
+        test("url containing just a sort by query works, and defaults to descending order", () => {
+            return request(app)
+                .get("/api/reviews?sort_by=review_id")
+                .expect(200)
+                .then(({ body }) => {
+                    const { reviews } = body;
+                    expect(reviews).toBeSorted({ key: "review_id", descending: true });
+                    expect(reviews).toHaveLength(13);
+                });
+        });
+
+        test("url containing a sort by and an order query works and returns the appropriate objects", () => {
+          return request(app)
+            .get("/api/reviews?sort_by=review_id&order=ASC")
+            .expect(200)
+            .then(({ body }) => {
+              const { reviews } = body;
+                expect(reviews).toBeSorted({ key: "review_id", descending: false });
+                expect(reviews).toHaveLength(13);
+            });
+        });
+
+        test("url containing a sort by query, an order by query, and a category query to return the correct object", () => {
+          return request(app)
+            .get("/api/reviews?sort_by=review_id&order=ASC&category=dexterity")
+            .expect(200)
+            .then(({ body }) => {
+              const { reviews } = body;
+              console.log(reviews);
+              expect(reviews).toBeSorted({ descending: true });
+              expect(reviews).toHaveLength(1);
+            });
+        });
+
+        test("url containing only a category query works", () => {
+            return request(app)
+                .get("/api/reviews?category=dexterity")
+                .expect(200)
+                .then(({ body }) => {
+                    const { reviews } = body;
+                    expect(reviews).toHaveLength(1)
+                });
+        });
+    });
+
+    describe("sad path :(", () => {
+        test("When an invalid sort_by query is sent get the appropriate error message back", () => {
+            return request(app)
+                .get("/api/reviews?sort_by=turkeys")
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toEqual("Invalid sort query.");
+                });
+        });
+
+        test("When an invalid order query is sent get the appropriate error message back", () => {
+          return request(app)
+            .get("/api/reviews?order=turkeys")
+            .expect(400)
+            .then(({ body }) => {
+              expect(body.msg).toEqual("Invalid order query.");
+            });
+        });
+
+        test("When an invalid category query is sent get the appropriate error message back", () => {
+          return request(app)
+            .get("/api/reviews?category=turkeys")
+            .expect(404)
+            .then(({ body }) => {
+              expect(body.msg).toEqual("The provided category doesn't exist.");
+            });
+        });
+    });
+});
