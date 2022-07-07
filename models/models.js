@@ -194,5 +194,16 @@ exports.addComment = (review_id, newComment) => {
 };
 
 exports.removeComment = (comment_id) => {
-    
-}
+    return db
+        .query(`DELETE FROM comments WHERE comment_id = $1 RETURNING *`, [comment_id])
+        .then(({ rows }) => {
+            console.log(rows);
+            if (rows.length === 0) {
+                return Promise.reject({
+                    status: 400,
+                    msg: "Comment ID given is out of range."
+                });
+            };
+            return rows;
+        });
+};

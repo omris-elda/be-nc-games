@@ -75,7 +75,6 @@ exports.getReviews = (request, response, next) => {
       response.status(200).send({ reviews });
     })
     .catch((err) => {
-      console.log(err);
       next(err);
     });
 };
@@ -105,13 +104,13 @@ exports.postComment = (request, response, next) => {
 };
 
 exports.deleteComment = (request, response, next) => {
-  const comment_id = request.params.comment_id;
+    const comment_id = request.params.comment_id;
 
-  removeComment(comment_id)
-    .then(() => {
-      response.status(204);
-    })
-    .catch((err) => {
-      next(err);
-    });
+    removeComment(comment_id)
+        .then(() => {
+            response.status(204).send()
+        })
+        .catch((err) => {
+            next(err);
+        });
 };

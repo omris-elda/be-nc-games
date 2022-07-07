@@ -507,3 +507,36 @@ describe("GET reviews with queries", () => {
         });
     });
 });
+
+describe("DELETE comments", () => {
+    describe("Happy path :)", () => {
+        test("get a 204 and no content back on a successful delete", () => {
+            return request(app)
+                .delete("/api/comments/1")
+                .expect(204)
+                .then(({ body }) => {
+                    expect(body).toEqual({});
+                });
+        });
+    });
+
+    describe("Sad path :(", () => {
+        test("If trying to delete a comment that doesn't exist, send back the appropriate error", () => {
+            return request(app)
+                .delete("/api/comments/9001")
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toEqual("Comment ID given is out of range.");
+                });
+        });
+
+        test("If the comment ID is in an incorrect format, get the appropraiate error back", () => {
+            return request(app)
+                .delete("/api/comments/eof")
+                .expect(400)
+                .then(({ body }) => {
+                    expect(body.msg).toEqual("Incorrect format used for query.");
+                });
+        });
+    });
+});
