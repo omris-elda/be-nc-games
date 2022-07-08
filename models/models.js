@@ -215,7 +215,6 @@ exports.removeComment = (comment_id) => {
 
 exports.retrieveSiteMap = () => {
   return fs.readFile("./endpoints.json", "utf-8").then((stringifiedSiteMap) => {
-    console.log(stringifiedSiteMap);
     return stringifiedSiteMap;
   });
 };
