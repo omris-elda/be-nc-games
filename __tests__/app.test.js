@@ -540,3 +540,11 @@ describe("DELETE comments", () => {
         });
     });
 });
+
+describe("GET /api", () => {
+    test("GET /api returns 200 and an object with a list of all the endpoints", () => {
+        return request(app)
+            .get("/api")
+        .expect(200)
+    })
+})
