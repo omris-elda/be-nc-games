@@ -1,6 +1,5 @@
 const fs = require("fs/promises");
 const db = require("../db/connection.js");
-const reviews = require("../db/data/test-data/reviews.js");
 
 exports.selectCategories = () => {
   return db.query(`SELECT * FROM categories;`).then(({ rows }) => {
