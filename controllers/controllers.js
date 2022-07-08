@@ -7,6 +7,7 @@ const {
   fetchComments,
   addComment,
   removeComment,
+  retrieveSiteMap,
 } = require("../models/models.js");
 
 exports.getCategories = (request, response, next) => {
@@ -112,5 +113,13 @@ exports.deleteComment = (request, response, next) => {
         })
         .catch((err) => {
             next(err);
+        });
+};
+
+exports.getSiteMap = (request, response, next) => {
+    retrieveSiteMap()
+        .then((siteMap) => {
+            console.log(siteMap);
+            response.status(200).send({ siteMap });
         });
 };
