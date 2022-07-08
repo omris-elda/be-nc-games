@@ -7,7 +7,9 @@
     "setup-dbs": "psql -U postgres -f ./db/setup.sql",
     "seed": "node ./db/seeds/run-seed.js",
     "test": "jest",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "seed:prod": " cross-env NODE_ENV=production DATABASE_URL=whoknows npm run seed",
+    "start": "node listen.js"
   },
   "repository": {
     "type": "git",
@@ -21,6 +23,7 @@
   },
   "homepage": "https://github.com/northcoders/be-nc-games#readme",
   "dependencies": {
+    "cross-env": "^7.0.3",
     "express": "^4.18.1",
     "fs": "^0.0.1-security",
     "husky": "^7.0.0",

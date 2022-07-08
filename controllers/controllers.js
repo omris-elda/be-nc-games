@@ -117,20 +117,9 @@ exports.deleteComment = (request, response, next) => {
 };
 
 exports.getSiteMap = (request, response, next) => {
-    
     retrieveSiteMap()
         .then((siteMap) => {
             console.log(siteMap);
             response.status(200).send({ siteMap });
         });
-
-//   fs.readFile(
-//     "../endpoints.json",
-//     "utf-8",
-//     (err, stringifiedOwner) => {
-//       sitemap = JSON.parse(stringifiedOwner);
-//       console.log(sitemap);
-//       response.status(200).send({ sitemap });
-//     }
-//   );
 };
