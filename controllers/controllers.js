@@ -114,3 +114,19 @@ exports.deleteComment = (request, response, next) => {
             next(err);
         });
 };
+
+exports.getSiteMap = (request, response, next) => {
+
+  sitemap = {};
+
+  fs.readFile(
+    "../endpoints.json",
+    "utf-8",
+    (err, stringifiedOwner) => {
+      sitemap = JSON.parse(stringifiedOwner);
+      console.log(sitemap);
+      response.status(200).send({ sitemap });
+    }
+  );
+
+};

@@ -2,6 +2,7 @@
   "GET /api": {
     "description": "serves up a json representation of all the available endpoints of the api"
   },
+
   "GET /api/categories": {
     "description": "serves an array of all categories",
     "queries": [],
@@ -14,6 +15,7 @@
       ]
     }
   },
+
   "GET /api/reviews": {
     "description": "serves an array of all reviews",
     "queries": ["category", "sort_by", "order"],
@@ -30,5 +32,64 @@
         }
       ]
     }
+  },
+
+  "GET /api/reviews/review_id": {
+    "description": "serves an object containing the specified array",
+    "parameter": "review_id",
+    "exampleResponse": {
+      "title": "One Night Ultimate Werewolf",
+      "designer": "Akihisa Okui",
+      "owner": "happyamy2016",
+      "review_img_url": "https://images.pexels.com/photos/5350049/pexels-photo-5350049.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260",
+      "category": "hidden-roles",
+      "created_at": 1610964101251,
+      "votes": 5
+    }
+  },
+
+  "GET /api/users": {
+    "description": "Returns an array containing all of the user objects",
+    "exampleResponse": {
+      "username": "dav3rid",
+      "name": "dave",
+      "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
+    }
+  },
+
+  "GET /api/reviews/:review_id/comments": {
+    "descritpion": "returns an array containing all the comments that are linked to the requested review",
+    "parameters": "review_id",
+    "exampleResponse": {
+      "comments": [
+        {
+          "body": "My dog loved this game too!",
+          "votes": 13,
+          "author": "mallionaire",
+          "review_id": 3,
+          "created_at": "new Date(1610964545410)"
+        }
+      ]
+    }
+  },
+
+  "POST /api/reviews/:review_id/comments": {
+    "descritpion": "returns an array containing all the comments that are linked to the requested review",
+    "parameters": "review_id",
+    "exampleInput": {
+      "username": "dav3rid",
+      "name": "dave"
+    },
+    "exampleResponse": {
+      "username": "dav3rid",
+      "name": "dave",
+      "avatar_url": "https://www.golenbock.com/wp-content/uploads/2015/01/placeholder-user.png"
+    }
+  },
+
+  "DELETE /api/comments/:comment_id": {
+    "description": "Deletes the specified comment and returns nothing",
+    "parameters": "comment_id",
+    "exampleResponse": {}
   }
 }
